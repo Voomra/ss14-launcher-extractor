@@ -1,0 +1,37 @@
+plugins {
+    id("java")
+    id("application")
+    id("org.openjfx.javafxplugin") version("0.1.0")
+}
+
+wrapper {
+    gradleVersion = "8.13"
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+java.toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+}
+
+group = "ru.di9.ss14"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly("org.jetbrains:annotations:23.0.0")
+    annotationProcessor("org.projectlombok:lombok:1.18.34")
+    compileOnly("org.projectlombok:lombok:1.18.34")
+
+    implementation("org.xerial:sqlite-jdbc:3.49.1.0")
+    implementation("com.github.luben:zstd-jni:1.5.7-1")
+}
+
+javafx {
+    version = "21"
+    modules = [ "javafx.controls", "javafx.fxml" ]
+}
+

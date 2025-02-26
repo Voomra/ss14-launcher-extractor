@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<VBox fx:controller="ru.di9.ss14.extractor.gui.MainController"
+      maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <MenuBar>
+        <Menu mnemonicParsing="false" text="File">
+            <MenuItem onAction="#onClickOpenMenu" mnemonicParsing="false" text="Открыть"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" text="Выход"/>
+        </Menu>
+    </MenuBar>
+    <TreeView fx:id="treeView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
+</VBox>
