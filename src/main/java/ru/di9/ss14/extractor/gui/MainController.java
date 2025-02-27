@@ -2,14 +2,15 @@ package ru.di9.ss14.extractor.gui;
 
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import javafx.stage.*;
 import lombok.Setter;
 import ru.di9.ss14.extractor.ContentDbManager;
 import ru.di9.ss14.extractor.ContentRec;
@@ -18,12 +19,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.SortedSet;
+import java.util.*;
 
 public class MainController implements Initializable {
     private static final int STATE_NOT_LOADED = 0;
@@ -168,7 +165,7 @@ public class MainController implements Initializable {
             }
 
             try {
-                exportRecursiveFolder(contentRec, dir.toPath());
+                showExportWindow(contentRec, dir.toPath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -181,20 +178,28 @@ public class MainController implements Initializable {
         return contextMenu;
     }
 
-    private void exportRecursiveFolder(ContentRec contentRec, Path currentDir) throws IOException {
-        var subDir = currentDir.resolve(contentRec.getName());
-        if (Files.notExists(subDir)) {
-            Files.createDirectory(subDir);
-        }
+    private void showExportWindow(ContentRec contentRec, Path currentDir) throws IOException {
+        var loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/view/export-dialog.fxml")));
+        Parent root = loader.load();
 
-        for (ContentRec rec : contentRec.getChildren()) {
-            if (rec.isFolder()) {
-                exportRecursiveFolder(rec, subDir);
-            } else {
-                try (var out = new FileOutputStream(subDir.resolve(rec.getName()).toFile())) {
-                    manager.readContent(rec.getId(), out);
-                }
-            }
-        }
+        var exportStage = new Stage();
+        exportStage.setScene(new Scene(root));
+        exportStage.setTitle("Статус сохранения");
+        exportStage.initModality(Modality.APPLICATION_MODAL);
+        exportStage.initOwner(stage);
+
+        var controller = (ExportInfoController)loader.getController();
+        controller.setStage(exportStage);
+        controller.setManager(manager);
+
+        exportStage.setOnShowing(event -> {
+            stage.getScene().getRoot().setDisable(true);
+            controller.startExport(contentRec, currentDir);
+        });
+        exportStage.setOnHiding(event -> {
+            controller.stopExport();
+            stage.getScene().getRoot().setDisable(false);
+        });
+        exportStage.showAndWait();
     }
 }
