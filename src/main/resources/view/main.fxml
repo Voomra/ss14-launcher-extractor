@@ -12,6 +12,8 @@
             <MenuItem mnemonicParsing="false" text="Выход"/>
         </Menu>
         <Menu mnemonicParsing="false" text="Помощь">
+            <MenuItem onAction="#onClickHelpMenu" mnemonicParsing="false" text="Как пользоваться?"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
             <MenuItem onAction="#onClickAboutMenu" mnemonicParsing="false" text="О программе"/>
         </Menu>
     </MenuBar>

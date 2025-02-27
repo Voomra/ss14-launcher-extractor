@@ -7,6 +7,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.*;
 import lombok.Setter;
 import ru.di9.ss14.extractor.ContentDbManager;
@@ -110,6 +112,54 @@ public class MainController implements Initializable {
             
             Программа предназначена для выгрузки загруженного через "Space Station 14 Launcher" контента.
             """);
+        alert.showAndWait();
+    }
+
+    public void onClickHelpMenu() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Справка");
+        alert.setHeaderText("Как пользоваться программой?");
+
+        TextArea textArea = new TextArea("""
+            В начале необходимо открыть файл базы данных контента "Space Station 14 Launcher".
+            
+            1. Откройте меню "Файл" -> "Открыть"
+            2. Выберите файл базы данных "лаунчера".
+               Для Windows, файл находиться по одному из следующих путей:
+               - %LOCALAPPDATA%\\Space Station 14\\launcher\\content.db
+               - C:\\Users\\<YOUR_NAME>\\AppData\\Local\\Space Station 14\\launcher\\content.db
+            
+            После загрузки появится список, состоящий из HEX последовательностей. Каждая из этих последовательностей -
+            это контент сервера, на который вы когда-либо заходили через "лаунчер".
+            К сожалению, в данной версии программы не встроен механизм, позволяющий "дешифровать" данные последовательности,
+            а потому вам придётся экспериментально выяснять, какая из представленных HEX последовательностей является
+            искомым сервером.
+            
+            Раскрытие списка HEX последовательности загружает информацию о контенте выбранного сервера.
+            
+            После этого, вы можете либо выгрузить конкретный файл (контент), либо выгрузить папку целиком.
+            Для этого нажмите на нужном элементе Правой Кнопкой Мыши (ПКМ) и выберите единственный пункт "Сохранить".
+            
+            Так же, после раскрытия HEX последовательности, вы можете нажать ПКМ на неё и выгрузить весь контент по
+            выбранному серверу.
+            """);
+
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(textArea, 0, 0);
+
+        alert.getDialogPane().setExpandableContent(expContent);
+        alert.getDialogPane().setExpanded(true);
+
         alert.showAndWait();
     }
 
