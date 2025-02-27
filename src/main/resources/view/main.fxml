@@ -6,10 +6,13 @@
       maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
       prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <MenuBar>
-        <Menu mnemonicParsing="false" text="File">
+        <Menu mnemonicParsing="false" text="Файл">
             <MenuItem onAction="#onClickOpenMenu" mnemonicParsing="false" text="Открыть"/>
             <SeparatorMenuItem mnemonicParsing="false"/>
             <MenuItem mnemonicParsing="false" text="Выход"/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Помощь">
+            <MenuItem onAction="#onClickAboutMenu" mnemonicParsing="false" text="О программе"/>
         </Menu>
     </MenuBar>
     <TreeView fx:id="treeView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>

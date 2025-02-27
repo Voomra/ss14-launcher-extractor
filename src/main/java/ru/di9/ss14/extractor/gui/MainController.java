@@ -6,10 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.stage.*;
 import lombok.Setter;
 import ru.di9.ss14.extractor.ContentDbManager;
@@ -99,6 +96,21 @@ public class MainController implements Initializable {
             mapForkLoaded.put(forkVersionItem, STATE_NOT_LOADED);
             rootItem.getChildren().add(forkVersionItem);
         });
+    }
+
+    public void onClickAboutMenu() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("О программе");
+        alert.setHeaderText(null);
+        alert.setContentText("""
+            -- SS14: Content Extractor --
+            
+            Автор: Voomra, 2025
+            Версия: 1.0
+            
+            Программа предназначена для выгрузки загруженного через "Space Station 14 Launcher" контента.
+            """);
+        alert.showAndWait();
     }
 
     private void createTreeItems(TreeItem<String> parentItem, SortedSet<ContentRec> sortedSet) {
