@@ -52,6 +52,10 @@ public class MainController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("content.db", "content.db"));
         File file = fileChooser.showOpenDialog(stage);
 
+        if (file == null) {
+            return;
+        }
+
         manager = new ContentDbManager(file.getAbsolutePath());
 
         rootItem.getChildren().clear();
