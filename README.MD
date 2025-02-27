@@ -31,18 +31,27 @@
 Требуется:
 
 - Java 21
-- Gradle 8
 
-Команда сборки
+### Linux
+
+Команда сборки:
 
 ```shell
 gradlew shadowJar
 ```
 
-В итоговый JAR будет находиться в `build/libs/ss14-launcher-extractor-1.0-SNAPSHOT.jar`.
-
 Команда запуска:
 
 ```shell
-java -jar ss14-launcher-extractor-1.0-SNAPSHOT.jar
+java -jar build/libs/ss14-launcher-extractor-1.0-SNAPSHOT.jar
 ```
+
+### Windows
+
+Команда сборки:
+
+```shell
+gradlew.bat createExe
+```
+
+Итоговый файл: `build/launch4j/ss14-launcher-extractor-1.0-SNAPSHOT.exe`
