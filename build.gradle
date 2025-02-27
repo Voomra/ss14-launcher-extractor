@@ -3,6 +3,7 @@ plugins {
     id("application")
     id("org.openjfx.javafxplugin") version("0.1.0")
     id("com.github.johnrengelman.shadow") version("8.1.1")
+    id("edu.sc.seis.launch4j") version("3.0.6")
 }
 
 wrapper {
@@ -22,23 +23,44 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    lombokVersion = "1.18.34"
+    javaFxVersion = "21"
+}
+
 dependencies {
     compileOnly("org.jetbrains:annotations:23.0.0")
-    annotationProcessor("org.projectlombok:lombok:1.18.34")
-    compileOnly("org.projectlombok:lombok:1.18.34")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+
+    ["linux", "win"].forEach {
+        implementation("org.openjfx:javafx-base:$javaFxVersion:$it")
+        implementation("org.openjfx:javafx-controls:$javaFxVersion:$it")
+        implementation("org.openjfx:javafx-fxml:$javaFxVersion:$it")
+        implementation("org.openjfx:javafx-graphics:$javaFxVersion:$it")
+    }
 
     implementation("org.xerial:sqlite-jdbc:3.49.1.0")
     implementation("com.github.luben:zstd-jni:1.5.7-1")
 }
 
-javafx {
-    version = "21"
-    modules = [ "javafx.controls", "javafx.fxml" ]
+application {
+    mainClass = "ru.di9.ss14.extractor.Launcher"
 }
 
 shadowJar {
-    mainClassName = "ru.di9.ss14.extractor.Launcher"
+    mainClassName = application.mainClass
     archiveBaseName.set(project.name)
     archiveVersion.set(project.version.toString())
     archiveClassifier.set("")
+}
+
+launch4j {
+    headerType = "gui"
+    outfile = "${project.name}-${project.version.toString()}.exe"
+    mainClassName = application.mainClass
+    copyConfigurable = []
+    jarTask = project.tasks.shadowJar
+    bundledJrePath = "jre"
+    downloadUrl = "https://adoptium.net/temurin/releases/?os=windows&arch=x64&package=jre"
 }
