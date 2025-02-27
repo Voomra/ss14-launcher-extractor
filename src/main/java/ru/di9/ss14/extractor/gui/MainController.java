@@ -7,6 +7,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.Setter;
@@ -16,11 +17,16 @@ import ru.di9.ss14.extractor.ContentRec;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
+
+import static java.lang.System.out;
 
 public class MainController implements Initializable {
     private static final int STATE_NOT_LOADED = 0;
@@ -107,14 +113,15 @@ public class MainController implements Initializable {
 
             if (contentRec.isFolder()) {
                 createTreeItems(fileItem, contentRec.getChildren());
+                fileItem.setContextMenuBuilder(() -> createFolderContextMenu(contentRec));
             } else {
-                fileItem.setContextMenuBuilder(() -> createContextMenu(contentRec));
+                fileItem.setContextMenuBuilder(() -> createFileContextMenu(contentRec));
             }
         });
     }
 
-    private ContextMenu createContextMenu(ContentRec contentRec) {
-        var menuItem = new MenuItem("\uD83D\uDCBE Сохранить %s в...".formatted(contentRec.getName()));
+    private ContextMenu createFileContextMenu(ContentRec contentRec) {
+        var menuItem = new MenuItem("\uD83D\uDCBE Сохранить файл '%s' в...".formatted(contentRec.getName()));
         menuItem.setOnAction(event -> {
             var fileChooser = new FileChooser();
             fileChooser.setTitle("Сохранить " + contentRec.getName());
@@ -141,5 +148,50 @@ public class MainController implements Initializable {
         var contextMenu = new ContextMenu();
         contextMenu.getItems().add(menuItem);
         return contextMenu;
+    }
+
+    private ContextMenu createFolderContextMenu(ContentRec contentRec) {
+        var menuItem = new MenuItem("\uD83D\uDCBE Сохранить папку '%s' в...".formatted(contentRec.getName()));
+        menuItem.setOnAction(event -> {
+            var dirChooser = new DirectoryChooser();
+            dirChooser.setTitle("Сохранить " + contentRec.getName());
+            if (lastSaveDir != null) {
+                dirChooser.setInitialDirectory(lastSaveDir);
+            }
+            File dir = dirChooser.showDialog(stage);
+
+            if (dir == null) {
+                return;
+            }
+
+            try {
+                exportRecursiveFolder(contentRec, dir.toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            lastSaveDir = dir;
+        });
+
+        var contextMenu = new ContextMenu();
+        contextMenu.getItems().add(menuItem);
+        return contextMenu;
+    }
+
+    private void exportRecursiveFolder(ContentRec contentRec, Path currentDir) throws IOException {
+        var subDir = currentDir.resolve(contentRec.getName());
+        if (Files.notExists(subDir)) {
+            Files.createDirectory(subDir);
+        }
+
+        for (ContentRec rec : contentRec.getChildren()) {
+            if (rec.isFolder()) {
+                exportRecursiveFolder(rec, subDir);
+            } else {
+                try (var out = new FileOutputStream(subDir.resolve(rec.getName()).toFile())) {
+                    manager.readContent(rec.getId(), out);
+                }
+            }
+        }
     }
 }
