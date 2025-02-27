@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("application")
     id("org.openjfx.javafxplugin") version("0.1.0")
+    id("com.github.johnrengelman.shadow") version("8.1.1")
 }
 
 wrapper {
@@ -35,3 +36,9 @@ javafx {
     modules = [ "javafx.controls", "javafx.fxml" ]
 }
 
+shadowJar {
+    mainClassName = "ru.di9.ss14.extractor.Launcher"
+    archiveBaseName.set(project.name)
+    archiveVersion.set(project.version.toString())
+    archiveClassifier.set("")
+}
