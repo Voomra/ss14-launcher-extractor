@@ -17,7 +17,6 @@ import ru.di9.ss14.extractor.ContentRec;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,8 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
-
-import static java.lang.System.out;
 
 public class MainController implements Initializable {
     private static final int STATE_NOT_LOADED = 0;
@@ -64,7 +61,7 @@ public class MainController implements Initializable {
         mapForkLoaded.clear();
 
         manager.getForkVersions().forEach(forkVersion -> {
-            var forkVersionItem = new TreeItem<>("\uD83D\uDCE6 " + forkVersion);
+            var forkVersionItem = new TreeItemExt<>("\uD83D\uDCE6 " + forkVersion);
             forkVersionItem.getChildren().add(new TreeItem<>("(загрузка...)"));
             forkVersionItem.expandedProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue || mapForkLoaded.get(forkVersionItem) != STATE_NOT_LOADED) {
@@ -84,11 +81,13 @@ public class MainController implements Initializable {
                     forkVersionItem.setExpanded(false);
                     forkVersionItem.getChildren().clear();
 
-                    SortedSet<ContentRec> paths = ((ContentRec) event.getSource().getValue()).getChildren();
+                    var rootRec = (ContentRec) event.getSource().getValue();
+                    SortedSet<ContentRec> paths = rootRec.getChildren();
                     createTreeItems(forkVersionItem, paths);
 
                     mapForkLoaded.put(forkVersionItem, STATE_LOADED);
                     forkVersionItem.setExpanded(true);
+                    forkVersionItem.setContextMenuBuilder(() -> createFolderContextMenu(rootRec, "\uD83D\uDCBE Сохранить в..."));
                 });
 
                 var thread = new Thread(task);
@@ -151,7 +150,11 @@ public class MainController implements Initializable {
     }
 
     private ContextMenu createFolderContextMenu(ContentRec contentRec) {
-        var menuItem = new MenuItem("\uD83D\uDCBE Сохранить папку '%s' в...".formatted(contentRec.getName()));
+        return createFolderContextMenu(contentRec, "\uD83D\uDCBE Сохранить папку '%s' в...".formatted(contentRec.getName()));
+    }
+
+    private ContextMenu createFolderContextMenu(ContentRec contentRec, String title) {
+        var menuItem = new MenuItem(title);
         menuItem.setOnAction(event -> {
             var dirChooser = new DirectoryChooser();
             dirChooser.setTitle("Сохранить " + contentRec.getName());
