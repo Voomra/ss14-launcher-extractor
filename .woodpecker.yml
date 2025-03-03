@@ -1,0 +1,9 @@
+when:
+  - branch: develop
+    event: [manual]
+
+steps:
+  - name: build
+    image: "docker.io/library/eclipse-temurin:21-jdk-alpine"
+    commands:
+      - gradlew shadowJar
