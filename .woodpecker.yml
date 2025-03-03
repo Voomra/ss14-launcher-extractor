@@ -1,9 +1,22 @@
 when:
   - branch: develop
-    event: [manual]
+    event: [ manual ]
+  - event: tag
 
 steps:
   - name: build
     image: "docker.io/library/eclipse-temurin:21-jdk-alpine"
     commands:
       - ./gradlew shadowJar
+    when:
+      event: [ manual, tag ]
+
+  - name: release
+    image: "woodpeckerci/plugin-release"
+    settings:
+      api_key:
+        from_secret: "Woodpecker-Release-Token"
+      files: "build/libs/*.jar"
+      base-url: "https://di9.ru/git"
+    when:
+      event: [ tag ]
