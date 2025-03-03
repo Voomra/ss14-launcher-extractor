@@ -12,7 +12,7 @@ steps:
       event: [ manual, tag ]
 
   - name: release
-    image: "woodpeckerci/plugin-release"
+    image: "docker.io/woodpeckerci/plugin-release:0.2.4"
     settings:
       api_key: "fd69506f7b0a97fde397fbbf45500e803f04c142"
       files: "build/libs/*.jar"
