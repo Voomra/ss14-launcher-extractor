@@ -43,7 +43,7 @@ gradlew shadowJar
 Команда запуска:
 
 ```shell
-java -jar build/libs/ss14-launcher-extractor-1.0-SNAPSHOT.jar
+java -jar build/libs/ss14-launcher-extractor-1.0.jar
 ```
 
 ### Windows
@@ -54,4 +54,4 @@ java -jar build/libs/ss14-launcher-extractor-1.0-SNAPSHOT.jar
 gradlew.bat createExe
 ```
 
-Итоговый файл: `build/launch4j/ss14-launcher-extractor-1.0-SNAPSHOT.exe`
+Итоговый файл: `build/launch4j/ss14-launcher-extractor-1.0.exe`
