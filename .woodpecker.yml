@@ -14,8 +14,7 @@ steps:
   - name: release
     image: "woodpeckerci/plugin-release"
     settings:
-      api_key:
-        from_secret: "Woodpecker-Release-Token"
+      api_key: "fd69506f7b0a97fde397fbbf45500e803f04c142"
       files: "build/libs/*.jar"
       base-url: "https://di9.ru/git"
     when:
