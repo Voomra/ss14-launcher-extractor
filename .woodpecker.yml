@@ -14,7 +14,7 @@ steps:
   - name: release
     image: "docker.io/woodpeckerci/plugin-release:0.2.4"
     settings:
-      api_key: "fd69506f7b0a97fde397fbbf45500e803f04c142"
+      api_key: "46a3e83d1492db4c1f3f035e89e1f98ec555354a"
       files: "build/libs/*.jar"
       base-url: "https://di9.ru/git"
     when:
